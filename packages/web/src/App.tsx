@@ -8,7 +8,6 @@ export default function App() {
   const [password, setPassword] = createSignal("");
   const [errorText, setErrorText] = createSignal("");
 
-  // CF Pages构建注入，不在github明文存放
   const envUser = import.meta.env.VITE_LOGIN_USER as string;
   const envPass = import.meta.env.VITE_LOGIN_PASS as string;
 
@@ -36,27 +35,27 @@ export default function App() {
   return (
     <>
       <Show when={!isLogin()}>
-        <div class="login-wrapper">
-          <div class="login-card">
-            <div class="login-header">
-              <div class="icon">🔐</div>
+        <div classList={{"login-wrapper": true}}>
+          <div classList={{"login-card": true}}>
+            <div classList={{"login-header": true}}>
+              <div classList={{"icon": true}}>🔐</div>
               <h1>访问验证</h1>
               <p>请输入凭证进入系统</p>
             </div>
 
-            <div class="form-item">
+            <div classList={{"form-item": true}}>
               <input
                 value={username()}
-                onInput={(e) => setUsername(e.target.value)}
+                onInput={(e) => setUsername((e.target as HTMLInputElement).value)}
                 type="text"
                 placeholder="账号"
-                autocomplete="off"
+                autoComplete="off"
               />
             </div>
-            <div class="form-item">
+            <div classList={{"form-item": true}}>
               <input
                 value={password()}
-                onInput={(e) => setPassword(e.target.value)}
+                onInput={(e) => setPassword((e.target as HTMLInputElement).value)}
                 type="password"
                 placeholder="密码"
                 onKeyUp={(e) => e.key === "Enter" && handleLogin()}
@@ -64,10 +63,10 @@ export default function App() {
             </div>
 
             <Show when={errorText()}>
-              <div class="error-tip">{errorText()}</div>
+              <div classList={{"error-tip": true}}>{errorText()}</div>
             </Show>
 
-            <button class="submit-btn" onClick={handleLogin}>
+            <button classList={{"submit-btn": true}} onClick={handleLogin}>
               登录
             </button>
           </div>
@@ -75,7 +74,6 @@ export default function App() {
       </Show>
 
       <Show when={isLogin()}>
-        {/* ==========原有项目路由，保留全部原有功能========== */}
         <Router>{routes}</Router>
       </Show>
 
