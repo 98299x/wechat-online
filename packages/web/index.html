@@ -1,11 +1,9 @@
 <!doctype html>
 <html lang="zh-CN">
-
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <!-- Primary Meta Tags -->
   <title>在线模拟微信工具</title>
   <meta name="title" content="在线模拟微信工具" />
@@ -14,7 +12,6 @@
   <meta name="author" content="在线模拟微信工具" />
   <meta name="robots" content="index, follow" />
   <meta name="language" content="zh-CN" />
-
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://wechat.caterpillar-soft.com/" />
@@ -22,25 +19,21 @@
   <meta property="og:description" content="免费的在线模拟微信工具，轻松创建逼真的微信对话界面。支持自定义头像、昵称、时间，完美模拟真实微信聊天场景。" />
   <meta property="og:image" content="https://wechat.caterpillar-soft.com/og-image.png" />
   <meta property="og:locale" content="zh_CN" />
-
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:url" content="https://wechat.caterpillar-soft.com/" />
   <meta property="twitter:title" content="在线模拟微信工具" />
   <meta property="twitter:description" content="免费的在线模拟微信工具，轻松创建逼真的微信对话界面。支持自定义头像、昵称、时间，完美模拟真实微信聊天场景。" />
   <meta property="twitter:image" content="https://wechat.caterpillar-soft.com/og-image.png" />
-
   <!-- Additional SEO Meta Tags -->
   <link rel="canonical" href="https://wechat.caterpillar-soft.com/" />
   <meta name="theme-color" content="#1aad19" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="在线模拟微信工具" />
-
   <!-- google adsense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4002926826632458"
     crossorigin="anonymous"></script>
-
   <!-- google analytics -->
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-G58WJT323F"></script>
@@ -48,10 +41,8 @@
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
-
     gtag('config', 'G-G58WJT323F');
   </script>
-
   <!-- Structured Data -->
   <script type="application/ld+json">
     {
@@ -73,11 +64,111 @@
       }
     }
     </script>
+  <style>
+    #login-wrap {
+      position: fixed;
+      inset:0;
+      background: linear-gradient(135deg,#edf2fa,#e2e8f0);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:99999;
+    }
+    .login-card {
+      width:380px;
+      background:#fff;
+      padding:40px 32px;
+      border-radius:16px;
+      box-shadow:0 8px 30px rgba(0,0,0,0.12);
+    }
+    .login-card h2 {
+      text-align:center;
+      margin:0 0 32px;
+    }
+    .item {
+      margin-bottom:16px;
+    }
+    .item input {
+      width:100%;
+      box-sizing:border-box;
+      padding:13px 16px;
+      border:1px solid #d1d5db;
+      border-radius:10px;
+      font-size:15px;
+    }
+    .err {
+      color:#dc2626;
+      font-size:13px;
+      margin:4px 0 14px;
+    }
+    button {
+      width:100%;
+      padding:13px;
+      background:#2563eb;
+      color:#fff;
+      border:none;
+      border-radius:10px;
+      font-size:16px;
+    }
+    #root {
+      display:none;
+    }
+  </style>
 </head>
-
 <body class="m-0 p-0">
-  <div id="root"></div>
-  <script type="module" src="/src/main.tsx"></script>
-</body>
+  <div id="login-wrap">
+    <div class="login-card">
+      <h2>🔐访问验证</h2>
+      <div class="item">
+        <input id="inp-user" type="text" placeholder="账号">
+      </div>
+      <div class="item">
+        <input id="inp-pass" type="password" placeholder="密码">
+      </div>
+      <div class="err" id="tip"></div>
+      <button id="btn-login">登录</button>
+    </div>
+  </div>
 
+  <div id="root"></div>
+
+  <script type="module">
+    const LOGIN_USER = import.meta.env.VITE_LOGIN_USER;
+    const LOGIN_PASS = import.meta.env.VITE_LOGIN_PASS;
+
+    const loginWrap = document.getElementById('login-wrap');
+    const root = document.getElementById('root');
+    const inpUser = document.getElementById('inp-user');
+    const inpPass = document.getElementById('inp-pass');
+    const btnLogin = document.getElementById('btn-login');
+    const tip = document.getElementById('tip');
+
+    function enterApp(){
+      loginWrap.style.display = 'none';
+      root.style.display = 'block';
+      import('/src/main.tsx');
+    }
+
+    if(localStorage.getItem("wechat_online_auth") === "ok"){
+      enterApp();
+    }
+
+    function doLogin(){
+      tip.textContent = '';
+      const u = inpUser.value.trim();
+      const p = inpPass.value.trim();
+      if(u === LOGIN_USER && p === LOGIN_PASS){
+        localStorage.setItem("wechat_online_auth","ok");
+        enterApp();
+      }else{
+        tip.textContent = "账号或密码错误";
+      }
+    }
+
+    btnLogin.addEventListener('click', doLogin);
+    inpPass.addEventListener('keydown',e=>{
+      if(e.key === 'Enter') doLogin();
+    });
+  </script>
+</body>
 </html>
